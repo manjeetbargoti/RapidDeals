@@ -25,26 +25,7 @@
                         <form action="{{ url('/search-result') }}" method="post">
                             <div class="search_input">
                                 <input type="hidden" value="1" name="property_type">
-                                <?php // $i = 0;?>
-                                <!-- foreach($location_data as $key =>$loc) -->
-                                <?php
-                                    
-                                    //     if($loc->sub_community != null){
-                                    //         $a[$loc->id] = $loc->sub_community.','.$loc->community.','.$loc->city;
-                                    //     }else{
-                                    //         if($loc->community != null){
-                                    //             $a[$loc->id] = $loc->community.','.$loc->city;
-                                    //         }else{
-                                    //             $a[$loc->id] = $loc->city;
-                                    //         }
-                                    //     }
-                                   
-                                    // $i++;
-                                ?>
-                                <!-- endforeach -->
-                                <?php // $a = array_unique($a); 
-                               // asort($a);
-                                ?>
+                                
                                 <select class="selectpicker form-control" name="location_id" id="number" data-container="body" data-live-search="true" title="Type your location to search" data-hide-disabled="true">
                                 <!-- foreach($a as $key => $p) -->
                                     <option id="city_search" value='<?php // $key ?>'><?php // $p ?></li>
@@ -59,26 +40,7 @@
                         <form action="{{ url('/search-result') }}" method="post">
                             <div class="search_input">
                                 <input type="hidden" value="2" name="property_type">
-                                <?php // $i = 0;?>
-                                <!-- foreach($location_data as $key =>$loc) -->
-                                <?php
-                                    
-                                    //     if($loc->sub_community != null){
-                                    //         $a[$loc->id] = $loc->sub_community.','.$loc->community.','.$loc->city;
-                                    //     }else{
-                                    //         if($loc->community != null){
-                                    //             $a[$loc->id] = $loc->community.','.$loc->city;
-                                    //         }else{
-                                    //             $a[$loc->id] = $loc->city;
-                                    //         }
-                                    //     }
-                                   
-                                    // $i++;
-                                ?>
-                                <!-- endforeach -->
-                                <?php // $a = array_unique($a); 
-                               // asort($a);
-                                ?>
+                                
                                 <select class="selectpicker form-control" name="location_id" id="number" data-container="body" data-live-search="true" title="Type your location to search" data-hide-disabled="true">
                                 <!-- foreach($a as $key => $p) -->
                                     <option id="city_search" value='<?php // $key ?>'><?php // $p ?></li>
@@ -214,6 +176,22 @@
                                 <tr>
                                     <td scope="row">Area</td>
                                     <td>@if(!empty($property->size)){{ $property->size }} sqft. @endif</td>
+                                </tr>
+                                <tr>
+                                    <td scope="row">Area</td>
+                                    <td>@if(!empty($property->size)){{ $property->size }} sqft. @endif</td>
+                                </tr>
+                                <tr>
+                                    <td scope="row">Project Status</td>
+                                    <td>@if(!empty($property->offering_type)) @if($property->offering_type == 'rent') Rent @else Sale @endif @endif</td>
+                                </tr>
+                                <tr>
+                                    <td scope="row">Project Status</td>
+                                    <td>@if(!empty($property->project_status)) Off Plan @endif</td>
+                                </tr>
+                                <tr>
+                                    <td scope="row">License</td>
+                                    <td>@if(!empty($property->licenses_number)) {{ $property->selected_license }} - {{ $property->licenses_number }} @endif</td>
                                 </tr>
                             </tbody>
                         </table>

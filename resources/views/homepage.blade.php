@@ -219,13 +219,13 @@
                 <span class="tag_top buy">
                     Off Plan
                 </span>
-                <a href="{{ url('/property/are.0.5/ajman') }}">
+                <a href="{{ url('/property/in/International City') }}">
                     <span class="count_overlay"></span>
                     <img src="{{ url('images/frontend/images/city1.jpg') }}">
                     <div class="count_txt">
-                        <h2>Ajman</h2>
+                        <h2>International City</h2>
                         <p>Check out some of the latest and
-                            best properties in Ajman.</p>
+                            best properties in International City.</p>
                     </div>
                 </a>
             </div>
@@ -235,13 +235,13 @@
                 <span class="tag_top buy">
                     Off Plan
                 </span>
-                <a href="{{ url('/property/are.0.1/dubai') }}">
+                <a href="{{ url('/property/in/Greens') }}">
                     <span class="count_overlay"></span>
                     <img src="{{ url('images/frontend/images/city2.jpg') }}">
                     <div class="count_txt">
-                        <h2>DUBAI CITY</h2>
+                        <h2>Greens</h2>
                         <p>Check out some of the latest and
-                            best properties in Dubai City.</p>
+                            best properties in Greens.</p>
                     </div>
                 </a>
             </div>
@@ -251,13 +251,13 @@
                 <span class="tag_top buy">
                     Off Plan
                 </span>
-                <a href="{{ url('/property/are.0.4/sharjah') }}">
+                <a href="{{ url('/property/in/Dubai Hills Estate') }}">
                     <span class="count_overlay"></span>
                     <img src="{{ url('images/frontend/images/city3.jpg') }}">
                     <div class="count_txt">
-                        <h2>HATTA</h2>
+                        <h2>Dubai Hills Estate</h2>
                         <p>Check out some of the latest and
-                            best properties in Sharjah.</p>
+                            best properties in Dubai Hills Estate.</p>
                     </div>
                 </a>
             </div>
@@ -267,13 +267,13 @@
                 <span class="tag_top buy">
                     Off Plan
                 </span>
-                <a href="{{ url('/property/are.0.6/abu-dhabi') }}">
+                <a href="{{ url('/property/in/Jumeirah Lake Towers') }}">
                     <span class="count_overlay"></span>
                     <img src="{{ url('images/frontend/images/city4.jpg') }}">
                     <div class="count_txt">
-                        <h2>ARJAN</h2>
+                        <h2>Jumeirah Lake Towers</h2>
                         <p>Check out some of the latest and
-                            best properties in Abu Dhabi.</p>
+                            best properties in Jumeirah Lake Towers.</p>
                     </div>
                 </a>
             </div>

@@ -47,16 +47,6 @@ class HomeController extends Controller
         // $location = $locations['city'];
         // echo"<pre>";print_r($location); die;
 
-        foreach($properties as $key => $val)
-        {
-            $locations = Location::where('l_id', $val->l_id)->first();
-            $properties[$key]->city = $locations->city;
-            $properties[$key]->community = $locations->community;
-            $properties[$key]->sub_community = $locations->sub_community;
-            $properties[$key]->tower = $locations->tower;
-            // echo"<pre>";print_r($locations); die;
-        }
-
         return view('homepage', compact('properties'));
     }
     // View Signle Property Detail Page
@@ -86,7 +76,7 @@ class HomeController extends Controller
         return view('frontend.property.single_property', compact('property'));
     }
 
-    public function singleOffPlan(Request $request, $refernece=null)
+    public function propertyOffPlan(Request $request, $refernece=null)
     {
         $properties = Property::where('offering_type', $refernece)->first();
 
@@ -96,24 +86,19 @@ class HomeController extends Controller
     // Property Category Page Function
     public function propertyCategory(Request $request, $url=null, $type=null)
     {
-        $type_name = Property::select('t_name')->where('offering_type', $url)->distinct()->get();
-        $properties = Property::where('offering_type', $url)->where('t_name', $type)->orderBy('created_at', 'desc')->paginate(10);
-        $property_count = Property::where('offering_type', $url)->where('t_name', $type)->count();
-        // $properties = json_encode(json_decode($type_name), true);
-        // echo "<pre>";print_r($properties);die;
-
-        foreach($properties as $key => $val)
-        {
-            $locations = Location::where('l_id', $val->l_id)->first();
-            $properties[$key]->city = $locations->city;
-            $properties[$key]->community = $locations->community;
-            $properties[$key]->sub_community = $locations->sub_community;
-            $properties[$key]->tower = $locations->tower;
-            // echo"<pre>";print_r($locations); die;
+    //  echo "<pre>";print_r($url);die;  
+        if($url == 'off_plan'){
+            $type_name = Property::select('t_name')->where('project_status', $url)->distinct()->get();
+            $properties = Property::where('project_status', $url)->where('t_name', $type)->orderBy('created_at', 'desc')->paginate(10);
+            $property_count = Property::where('project_status', $url)->where('t_name', $type)->count();
+        }else{
+            $type_name = Property::select('t_name')->where('offering_type', $url)->distinct()->get();
+            $properties = Property::where('offering_type', $url)->where('t_name', $type)->orderBy('created_at', 'desc')->paginate(10);
+            $property_count = Property::where('offering_type', $url)->where('t_name', $type)->count();
+            // $properties = json_encode(json_decode($type_name), true);
+            // echo "<pre>";print_r($properties);die;
         }
-        // echo"<pre>";print_r($type); die;
         
-
         return view('frontend.property.property_category', compact('properties', 'type_name', 'property_count'));
     }
 
@@ -128,18 +113,6 @@ class HomeController extends Controller
         // $properties = json_encode(json_decode($type_name), true);
         // echo "<pre>";print_r($properties);die;
 
-        foreach($properties as $key => $val)
-        {
-            $locations = Location::where('l_id', $val->l_id)->first();
-            $properties[$key]->city = $locations->city;
-            $properties[$key]->community = $locations->community;
-            $properties[$key]->sub_community = $locations->sub_community;
-            $properties[$key]->tower = $locations->tower;
-            // echo"<pre>";print_r($locations); die;
-        }
-        // echo"<pre>";print_r($type); die;
-        
-
         return view('frontend.property.property_category', compact('properties', 'type_name', 'property_count'));
     }
 
@@ -149,46 +122,31 @@ class HomeController extends Controller
    
     public function propertyFor(Request $request, $url=null)
     {
-        $type_name = Property::select('t_name')->where('offering_type', $url)->distinct()->get();
-        $properties = Property::where('offering_type', $url)->orderBy('created_at', 'desc')->paginate(10);
-        $property_count = Property::where('offering_type', $url)->count();
-        // $properties = json_encode(json_decode($type_name), true);
-        // echo "<pre>";print_r($properties);die;
-
-        foreach($properties as $key => $val)
+        // echo "<pre>";print_r($url);die;
+        if($url == 'off-plan')
         {
-            $locations = Location::where('l_id', $val->l_id)->first();
-            $properties[$key]->city = $locations->city;
-            $properties[$key]->community = $locations->community;
-            $properties[$key]->sub_community = $locations->sub_community;
-            $properties[$key]->tower = $locations->tower;
-            // echo"<pre>";print_r($locations); die;
+            // echo "<pre>";print_r($url);die;
+            $type_name = Property::select('t_name')->where('project_status', 'off_plan')->distinct()->get();
+            $properties = Property::where('project_status', 'off_plan')->orderBy('created_at', 'desc')->paginate(10);
+            $property_count = Property::where('project_status', 'off_plan')->count();
+        }else{
+            $type_name = Property::select('t_name')->where('offering_type', $url)->distinct()->get();
+            $properties = Property::where('offering_type', $url)->orderBy('created_at', 'desc')->paginate(10);
+            $property_count = Property::where('offering_type', $url)->count();
+            // $properties = json_encode(json_decode($type_name), true);
+            // echo "<pre>";print_r($properties);die;
         }
-
-        // echo "<pre>";print_r($properties);die;
-        
         return view('frontend.property.property_category', compact('properties', 'type_name', 'property_count'));
     }
 
     // Property by State
-    public function cityProperty(Request $request,$id=null)
+    public function cityProperty(Request $request, $community=null)
     {
-        $city_name = Location::select('city')->where('l_id', $id)->first();
-        $cityname = $city_name['city'];
-        $location_ids = Location::select('l_id')->where('city', $cityname)->get();
-        $location_ids = json_decode(json_encode($location_ids),true);
+        $type_name = Property::select('t_name')->where('community', $community)->distinct()->get();
+        $properties = Property::where('community', $community)->orderBy('p_created_at', 'desc')->paginate(10);
+        $property_count = Property::where('community', $community)->count();
 
-        // echo "<pre>"; print_r($location_ids['l_id']);die;
-
-        foreach($location_ids as $lid)
-        {
-            $properties = Property::where('l_id', $lid['l_id'])->take(10)->get();
-            // echo "<pre>"; print_r($properties);
-        }
-
-        echo "<pre>"; print_r($properties);die;
-
-        return view('frontend.property.property_category_offplan', compact('properties'));
+        return view('frontend.property.property_category', compact('properties', 'type_name', 'property_count'));
     }
 
     // Subscribe Now
@@ -656,4 +614,9 @@ class HomeController extends Controller
     //     }
     //     return $hit;
     // }
+
+    // Add City to Properties
+    public function addPropCity(){
+        
+    }
 }

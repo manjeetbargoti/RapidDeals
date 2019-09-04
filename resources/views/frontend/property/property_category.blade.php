@@ -99,7 +99,11 @@
                         <ul>
                         @foreach($type_name as $tn) 
                             <li>
+                            @if($p->project_status == 'off_plan')
+                            <a href="{{ url('/properties/for/'.$p->project_status.'/'.$tn->t_name) }}">{{ $tn->t_name }} ({{ \App\Property::where('t_name', $tn->t_name)->where('project_status', 'off_plan')->count() }})</a>
+                            @else
                                 <a href="{{ url('/properties/for/'.$p->offering_type.'/'.$tn->t_name) }}">{{ $tn->t_name }} ({{ \App\Property::where('t_name', $tn->t_name)->where('offering_type', $p->offering_type)->count() }})</a>
+                            @endif
                             </li>
                         @endforeach
                         </ul>
@@ -150,8 +154,7 @@
                                 </div>
                                 <div class="proplist_item">
                                     <div class="pro_con">
-                                        <label
-                                            class="badge badge-warning">{{ $p->t_name }}</label>
+                                        <label class="badge badge-warning">{{ $p->t_name }}</label> @if(!empty($p->project_status))<label class="badge badge-info">Off Plan </label>@endif
                                         <label class="badge badge-success">@if($p->offering_type == 'sale') Buy
                                             @elseif($p->offering_type == 'rent') Rent @elseif($p->offering_type == 'off-plan') Off Plan
                                             @endif</label>

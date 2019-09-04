@@ -124,16 +124,16 @@ Route::group(['middleware' => 'auth'], function (){
 
 
     // Property Category Page
-    Route::match(['get','post'],'/category/{url}', 'HomeController@propertyCategory')->name('property.category');
+    // Route::match(['get','post'],'/property/off-plan', 'HomeController@propertyOffPlan');
     Route::match(['get','post'],'/properties/for/{url}/{type}', 'HomeController@propertyCategory');
     Route::match(['get','post'],'/property/for/category/{type}', 'HomeController@propertyInCategory');
 
     // Property for Route (Buy/Rent/OFF Plan)
-    Route::get('/property-for/{url}/{id}', 'HomeController@offPlan');
+    // Route::get('/property-for/{url}/{id}', 'HomeController@offPlan');
     Route::match(['get','post'],'/properties/for/{url}', 'HomeController@propertyFor');
 
     // Property Based on City
-    Route::get('/property/{id}/{city}', 'HomeController@cityProperty');
+    Route::get('/property/in/{community}', 'HomeController@cityProperty');
 
     // Blog Page
     Route::get('/blog', 'PostController@blogPage');
