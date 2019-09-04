@@ -176,6 +176,43 @@ desired effect
     });
     </script>
 
+<script>
+    //Homepage search js
+$(document).ready(function(){
+  $('.search_location').keyup(function(){ 
+    var query = $(this).val();
+    if(query != ''){
+      var _token = $('input[name="_token"]').val();
+      
+      $.ajax({
+        url:"/admin/add-property/get-location",
+        method:"POST",
+        data:{query:query, _token:_token},
+        success:function(data){
+          $('#searchlist').fadeIn(); 
+          $('#searchlist').html(data);
+        }
+      });
+    }
+  });
+
+  $(document).on('click', '#type_search', function(){ 
+    $('#search_name').val($(this).text()); 
+    $('#searchlist').fadeOut(); 
+  }); 
+
+  $(document).on('click', function(){ 
+    $('#searchlist').fadeOut(); 
+  });
+
+  $(document).keyup(function(e) {
+    if (e.key === "Escape") { 
+      $('#searchlist').fadeOut(); 
+    }
+  });
+});
+</script>
+
     <script>
     @if(Session::has('flash_message_success'))
     $('.top-right').notify({

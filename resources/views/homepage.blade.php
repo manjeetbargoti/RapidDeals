@@ -130,7 +130,7 @@
                             <div class="pro_con">
                                 <h5>{{ $p->community }}, {{ $p->city }}</h5>
                                 @if(!empty($p->offering_type))
-                                <a class="badge badge-warning badge-sm" href="#">{{ $p->t_name }}</a>
+                                <a class="badge badge-warning badge-sm" href="{{ url('properties/for/'.$p->offering_type.'/'.$p->t_name) }}">{{ $p->t_name }}</a>
                                 @endif
                                 <p>{{ $p->pro_title }}</p>
                                 <ul>
@@ -181,7 +181,7 @@
                         </div>
                         <div class="pro_con">
                             <h5>{{ $p->community }}, {{ $p->city }}</h5>
-                            <a class="badge badge-warning badge-sm" href="#">{{ $p->t_name }}</a>
+                            <a class="badge badge-warning badge-sm" href="{{ url('properties/for/'.$p->offering_type.'/'.$p->t_name) }}">{{ $p->t_name }}</a>
                             <p>{{ $p->pro_title }}</p>
                             <ul>
                                 @if(!empty($p->bedrooms))<li><img

@@ -48,23 +48,26 @@
                     <!-- /.box-header -->
                     <div class="box-body">
                         <ul class="products-list product-list-in-box">
-                            @foreach(\App\Property::orderBy('created_at', 'desc')->take(5)->get() as $p)
+                            @foreach($properties as $p)
                             <li class="item">
                                 <div class="product-img">
-                                    @foreach(\App\PropertyImage::where('property_id', $p->id)->take(1)->get() as $pim)
-                                        <img src="{{ url('/images/frontend/property_images/large/'.$pim->image_name) }}" alt="Product Image">
+                                @if(!empty($p->images_mlink))
+                                    @foreach(explode(',',$p->images_mlink) as $key => $image_m)
+                                        @if($key == 0)
+                                        <img class="img-responsive" src="{{ $image_m }}">
+                                        @endif
                                     @endforeach
+                                @else
+                                <img src="{{ url('images/frontend/property_images/large/default.png') }}">
+                                @endif
                                 </div>
                                 <div class="product-info">
-                                    <a href="{{ url('/properties/'.$p->id) }}" target="_blank" class="product-title">{{ str_limit($p->name, $limit=150) }}
-                                        <span class="label label-success pull-right">@if($p->property_for == 2)
-                                            AED {{ $p->property_price }} <span>/Year</span>
+                                    <a href="{{ url('/properties/'.$p->reference) }}" target="_blank" class="product-title">{{ str_limit($p->pro_title, $limit=150) }}
+                                        <span class="label label-success pull-right">@if($p->offering_type == 'rent')
+                                            AED {{ $p->price_value }} <span>/Year</span>
                                             @else
-                                            AED {{ $p->property_price }}
+                                            AED {{ $p->price_value }}
                                             @endif</span></a>
-                                    <span class="product-description">
-                                        Samsung 32" 1080p 60Hz LED Smart HDTV.
-                                    </span>
                                 </div>
                             </li>
                             @endforeach

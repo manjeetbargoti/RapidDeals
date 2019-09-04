@@ -166,5 +166,8 @@ Route::group(['middleware' => 'auth'], function (){
     //api to local
     Route::match(['get', 'post'], '/request_api', 'HomeController@req_api');
 
+    // Get Location
+    Route::match(['get','post'], '/admin/add-property/get-location', 'PropertyController@getLocation');
+
 
 Route::get('/logout', 'AdminController@logout');

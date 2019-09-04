@@ -217,7 +217,51 @@
         </div>
     </section>
 
-    
+    <section class="property_sec">
+        <div class="container">
+            <h3 class="mb-3">More available in {{ $property->community }} </h3>
+            <div class="row">
+                <?php $counter = 0; ?>
+                @foreach(\App\Property::where('community',$property->community)->orderBy('p_created_at', 'desc')->take(4)->get() as $prel)
+                <div class="col-md-3">
+                    <div class="probox">
+                        <a href="{{ url('/properties/'.$prel->reference) }}">
+                            <span
+                                class="tag_top @if($prel->offering_type == 'rent') rent @elseif($prel->offering_type == 'sale') sell @endif">
+                                @if($prel->offering_type == 'rent') Rent @elseif($prel->offering_type == 'sale') Buy @endif</span>
+                            <div class="pro_img">
+                                @if(!empty($prel->images_mlink))
+                                    @foreach(explode(',',$prel->images_mlink) as $key => $image_m)
+                                        @if($key == 0)
+                                        <img class="img-responsive" src="{{ $image_m }}">
+                                        @endif
+                                    @endforeach
+                                @else
+                                <img src="{{ url('images/frontend/property_images/large/default.png') }}">
+                                @endif
+                            </div>
+                            <div class="pro_con">
+                                <h5>{{ str_limit($prel->community, $limit=13) }}, {{ $prel->city }}</h5> 
+                                <a class="badge badge-warning badge-sm" href="{{ url('/properties/for/'.$prel->offering_type.'/'.$prel->t_name) }}">
+                                    {{ $prel->t_name }}
+                                </a>
+                                <p>{{ $prel->pro_title }}</p>
+                                <h6>@if($prel->offering_type == 'rent')AED {{ $prel->price_value }} <span>/{{ $prel->price_period }}</span>@elseif($prel->offering_type == 'sale') AED {{ $prel->price_value }} @endif</h6>
+                                <ul>
+                                    @if(!empty($prel->bedrooms))<li><img src="{{ url('images/frontend/images/bedroom.svg') }}">{{ $prel->bedrooms }}
+                                    </li>@endif
+                                    @if(!empty($prel->bathrooms))<li><img
+                                            src="{{ url('images/frontend/images/bathroom.svg') }}">{{ $prel->bathrooms }}
+                                    </li>@endif
+                                </ul>
+                            </div>
+                        </a>
+                    </div>
+            </div>
+            @endforeach
+        </div>
+</div>
+</section>
 
 </div>
 
