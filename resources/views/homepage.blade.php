@@ -123,9 +123,13 @@
                                         <img class="img-responsive" src="{{ $image_m }}">
                                         @endif
                                     @endforeach
-                                @else
-                                <img src="{{ url('images/frontend/property_images/large/default.png') }}">
-                                @endif
+                                    @elseif(\App\PropertyImage::where('property_id', $p->id)->count() > 0)
+                                @foreach(\App\PropertyImage::where('property_id', $p->id)->get() as $pim)
+                                    <img class="img-responsive" src="{{ url('images/frontend/property_images/large/'.$pim->image_name) }}">
+                                @endforeach
+                            @else
+                            <img src="{{ url('images/frontend/property_images/large/default.png') }}">
+                            @endif
                             </div>
                             <div class="pro_con">
                                 <h5>{{ $p->community }}, {{ $p->city }}</h5>
@@ -174,6 +178,10 @@
                                     @if($key == 0)
                                     <img class="img-responsive" src="{{ $image_m }}">
                                     @endif
+                                @endforeach
+                            @elseif(\App\PropertyImage::where('property_id', $p->id)->count() > 0)
+                                @foreach(\App\PropertyImage::where('property_id', $p->id)->get() as $pim)
+                                    <img class="img-responsive" src="{{ url('images/frontend/property_images/large/'.$pim->image_name) }}">
                                 @endforeach
                             @else
                             <img src="{{ url('images/frontend/property_images/large/default.png') }}">

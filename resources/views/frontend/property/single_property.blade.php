@@ -21,44 +21,51 @@
                         </li>
                     </ul>
                     <div class="tab-content searchbg" id="myTabContent">
-                    <div class="tab-pane fade show active" id="buy" role="tabpanel" aria-labelledby="buy-tab">
-                        <form action="{{ url('/search-result') }}" method="post">
-                            <div class="search_input">
-                                <input type="hidden" value="1" name="property_type">
-                                
-                                <select class="selectpicker form-control" name="location_id" id="number" data-container="body" data-live-search="true" title="Type your location to search" data-hide-disabled="true">
-                                <!-- foreach($a as $key => $p) -->
-                                    <option id="city_search" value='<?php // $key ?>'><?php // $p ?></li>
-                                <!-- endforeach -->
-                                </select>
-                                <button type="submit"><i class="icon ion-md-search"></i></button>
-                            </div>
-                            {{ csrf_field() }}
-                        </form>
-                    </div>
-                    <div class="tab-pane fade" id="rent" role="tabpanel" aria-labelledby="rent-tab">
-                        <form action="{{ url('/search-result') }}" method="post">
-                            <div class="search_input">
-                                <input type="hidden" value="2" name="property_type">
-                                
-                                <select class="selectpicker form-control" name="location_id" id="number" data-container="body" data-live-search="true" title="Type your location to search" data-hide-disabled="true">
-                                <!-- foreach($a as $key => $p) -->
-                                    <option id="city_search" value='<?php // $key ?>'><?php // $p ?></li>
-                                <!-- endforeach -->
-                                </select>
-                                <button type="submit"><i class="icon ion-md-search"></i></button>
-                            </div>
-                            {{ csrf_field() }}
-                        </form>
-                    </div>
+                        <div class="tab-pane fade show active" id="buy" role="tabpanel" aria-labelledby="buy-tab">
+                            <form action="{{ url('/search-result') }}" method="post">
+                                <div class="search_input">
+                                    <input type="hidden" value="1" name="property_type">
+
+                                    <select class="selectpicker form-control" name="location_id" id="number"
+                                        data-container="body" data-live-search="true"
+                                        title="Type your location to search" data-hide-disabled="true">
+                                        <!-- foreach($a as $key => $p) -->
+                                        <option id="city_search" value='<?php // $key ?>'><?php // $p ?></li>
+                                            <!-- endforeach -->
+                                    </select>
+                                    <button type="submit"><i class="icon ion-md-search"></i></button>
+                                </div>
+                                {{ csrf_field() }}
+                            </form>
+                        </div>
+                        <div class="tab-pane fade" id="rent" role="tabpanel" aria-labelledby="rent-tab">
+                            <form action="{{ url('/search-result') }}" method="post">
+                                <div class="search_input">
+                                    <input type="hidden" value="2" name="property_type">
+
+                                    <select class="selectpicker form-control" name="location_id" id="number"
+                                        data-container="body" data-live-search="true"
+                                        title="Type your location to search" data-hide-disabled="true">
+                                        <!-- foreach($a as $key => $p) -->
+                                        <option id="city_search" value='<?php // $key ?>'><?php // $p ?></li>
+                                            <!-- endforeach -->
+                                    </select>
+                                    <button type="submit"><i class="icon ion-md-search"></i></button>
+                                </div>
+                                {{ csrf_field() }}
+                            </form>
+                        </div>
                         <div class="tab-pane fade" id="offPlan" role="tabpanel" aria-labelledby="off-plan-tab">
                             <form action="{{ url('/search-result') }}" method="post">
                                 <div class="search_input">
                                     <input type="hidden" value="3" name="property_type">
-                                    <select class="selectpicker form-control" name="search_text" id="number" data-container="body" data-live-search="true" title="Type your location to search" data-hide-disabled="true">
-                                    @foreach(\App\City::where('country_id', 231)->orderBy('name', 'asc')->get() as $key => $p )
+                                    <select class="selectpicker form-control" name="search_text" id="number"
+                                        data-container="body" data-live-search="true"
+                                        title="Type your location to search" data-hide-disabled="true">
+                                        @foreach(\App\City::where('country_id', 231)->orderBy('name', 'asc')->get() as
+                                        $key => $p )
                                         <option id="city_search" value='<?=$p['id']?>'><?=$p['name']?></li>
-                                    @endforeach
+                                            @endforeach
                                     </select>
                                     <button type="submit"><i class="icon ion-md-search"></i></button>
                                 </div>
@@ -90,10 +97,10 @@
     <section class="pt-1">
         <div class="container">
             @if(Session::has('flash_message_success'))
-                <div class="alert alert-success alert-dismissible">
-                    <button class="close" data-dismiss="alert" aria-label="close">&times;</button>
-                    <strong>{!! session('flash_message_success') !!}</strong>
-                </div>
+            <div class="alert alert-success alert-dismissible">
+                <button class="close" data-dismiss="alert" aria-label="close">&times;</button>
+                <strong>{!! session('flash_message_success') !!}</strong>
+            </div>
             @endif
             <div class="details_headding">
                 <div class="row">
@@ -104,7 +111,8 @@
                     <div class="col-md-5">
                         <div class="share_query">
                             <div class="callquery">
-                                <a href="mailto:manjeet.singh@magicgroupinc.com"><img src="{{ url('/images/frontend/images/mail.svg') }}"></a>
+                                <a href="mailto:manjeet.singh@magicgroupinc.com"><img
+                                        src="{{ url('/images/frontend/images/mail.svg') }}"></a>
                                 <a href="#"><img src="{{ url('/images/frontend/images/wp.svg') }}"></a>
                                 <a href="tel:+97101234567"><img src="{{ url('/images/frontend/images/call.svg') }}"></a>
                             </div>
@@ -125,7 +133,18 @@
                                 <img height="450" src="{{ $pim }}" />
                             </li>
                             @endforeach
-                            
+                            @elseif(\App\PropertyImage::where('property_id', $property->id)->count() > 0)
+                            @foreach(\App\PropertyImage::where('property_id', $property->id)->get() as $pim)
+                            <li style="text-align: center;background:#f8f8f8;" height="100" width="200"
+                                data-thumb="{{ url('images/frontend/property_images/large/'.$pim->image_name) }}">
+                                <img height="450"
+                                    src="{{ url('images/frontend/property_images/large/'.$pim->image_name) }}" />
+                            </li>
+                            @endforeach
+                            @else
+                            <li style="text-align: center;background:#f8f8f8;">
+                                <img height="450" src="{{ url('images/frontend/property_images/large/default.png') }}">
+                            </li>
                             @endif
                         </ul>
                     </div>
@@ -144,8 +163,9 @@
                                 <tr>
                                     <td scope="row">Price</td>
                                     <td>@if($property->offering_type == 'rent')
-                                        AED {{ $property->price_value }} @if(!empty($property->price_period)) {{ $property->price_period }} @else /year @endif
-                                        @elseif($property->offering_type == 'sale') 
+                                        AED {{ $property->price_value }} @if(!empty($property->price_period))
+                                        {{ $property->price_period }} @else /year @endif
+                                        @elseif($property->offering_type == 'sale')
                                         AED {{ $property->price_value }}
                                         @endif</td>
                                 </tr>
@@ -183,7 +203,8 @@
                                 </tr>
                                 <tr>
                                     <td scope="row">Project Status</td>
-                                    <td>@if(!empty($property->offering_type)) @if($property->offering_type == 'rent') Rent @else Sale @endif @endif</td>
+                                    <td>@if(!empty($property->offering_type)) @if($property->offering_type == 'rent')
+                                        Rent @else Sale @endif @endif</td>
                                 </tr>
                                 <tr>
                                     <td scope="row">Project Status</td>
@@ -191,7 +212,8 @@
                                 </tr>
                                 <tr>
                                     <td scope="row">License</td>
-                                    <td>@if(!empty($property->licenses_number)) {{ $property->selected_license }} - {{ $property->licenses_number }} @endif</td>
+                                    <td>@if(!empty($property->licenses_number)) {{ $property->selected_license }} -
+                                        {{ $property->licenses_number }} @endif</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -202,11 +224,11 @@
                         <h5>AMENITIES</h5>
                         <div class="amenties">
                             <ul>
-                            @if(!empty($property->amenities_name))
-                            @foreach(explode(',', $property->amenities_name) as $amenities_name)
+                                @if(!empty($property->amenities_name))
+                                @foreach(explode(',', $property->amenities_name) as $amenities_name)
                                 <li>{{ $amenities_name }}</li>
-                            @endforeach
-                            @endif
+                                @endforeach
+                                @endif
                             </ul>
                         </div>
                     </div>
@@ -217,38 +239,73 @@
         </div>
     </section>
 
+    <section class="pt-1 @if($property->project_status == 'off_plan') d-block @else d-none @endif">
+        <div class="container">
+            @if(\App\FloorImage::where('property_id', $property->id)->count() > 0)
+            <h3 class="mb-3">Floor Plans</h3>
+            @endif
+            <div class="demo">
+                <div class="item">
+                    <div class="clearfix">
+                        <ul id="image-gallery2" class="gallery2 list-unstyled cS-hidden">
+                            @if(\App\FloorImage::where('property_id', $property->id)->count() > 0)
+                            @foreach(\App\FloorImage::where('property_id', $property->id)->get() as $pim)
+                            <li style="text-align: center;background: #f8f8f8;"
+                                data-thumb="{{ url('/images/frontend/property_images/large/'.$pim->image_name) }}">
+                                <img src="{{ url('/images/frontend/property_images/large/'.$pim->image_name) }}" />
+                            </li>
+                            @endforeach
+                            @endif
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="property_sec">
         <div class="container">
             <h3 class="mb-3">More available in {{ $property->community }} </h3>
             <div class="row">
                 <?php $counter = 0; ?>
-                @foreach(\App\Property::where('community',$property->community)->orderBy('p_created_at', 'desc')->take(4)->get() as $prel)
+                @foreach(\App\Property::where('community',$property->community)->orderBy('created_at',
+                'desc')->take(4)->get() as $prel)
                 <div class="col-md-3">
                     <div class="probox">
                         <a href="{{ url('/properties/'.$prel->reference) }}">
                             <span
                                 class="tag_top @if($prel->offering_type == 'rent') rent @elseif($prel->offering_type == 'sale') sell @endif">
-                                @if($prel->offering_type == 'rent') Rent @elseif($prel->offering_type == 'sale') Buy @endif</span>
+                                @if($prel->offering_type == 'rent') Rent @elseif($prel->offering_type == 'sale') Buy
+                                @endif</span>
                             <div class="pro_img">
                                 @if(!empty($prel->images_mlink))
-                                    @foreach(explode(',',$prel->images_mlink) as $key => $image_m)
-                                        @if($key == 0)
-                                        <img class="img-responsive" src="{{ $image_m }}">
-                                        @endif
+                                @foreach(explode(',',$prel->images_mlink) as $key => $image_m)
+                                    @if($key == 0)
+                                    <img class="img-responsive" src="{{ $image_m }}">
+                                    @endif
+                                @endforeach
+                                @elseif(\App\PropertyImage::where('property_id', $prel->id)->count() > 0)
+                                    @foreach(\App\PropertyImage::where('property_id', $prel->id)->take(1)->get() as $pim)
+                                    <img class="img-responsive"
+                                        src="{{ url('images/frontend/property_images/large/'.$pim->image_name) }}">
                                     @endforeach
                                 @else
                                 <img src="{{ url('images/frontend/property_images/large/default.png') }}">
                                 @endif
                             </div>
                             <div class="pro_con">
-                                <h5>{{ str_limit($prel->community, $limit=13) }}, {{ $prel->city }}</h5> 
-                                <a class="badge badge-warning badge-sm" href="{{ url('/properties/for/'.$prel->offering_type.'/'.$prel->t_name) }}">
+                                <h5>{{ str_limit($prel->community, $limit=13) }}, {{ $prel->city }}</h5>
+                                <a class="badge badge-warning badge-sm"
+                                    href="{{ url('/properties/for/'.$prel->offering_type.'/'.$prel->t_name) }}">
                                     {{ $prel->t_name }}
                                 </a>
                                 <p>{{ $prel->pro_title }}</p>
-                                <h6>@if($prel->offering_type == 'rent')AED {{ $prel->price_value }} <span>/{{ $prel->price_period }}</span>@elseif($prel->offering_type == 'sale') AED {{ $prel->price_value }} @endif</h6>
+                                <h6>@if($prel->offering_type == 'rent')AED {{ $prel->price_value }}
+                                    <span>/{{ $prel->price_period }}</span>@elseif($prel->offering_type == 'sale') AED
+                                    {{ $prel->price_value }} @endif</h6>
                                 <ul>
-                                    @if(!empty($prel->bedrooms))<li><img src="{{ url('images/frontend/images/bedroom.svg') }}">{{ $prel->bedrooms }}
+                                    @if(!empty($prel->bedrooms))<li><img
+                                            src="{{ url('images/frontend/images/bedroom.svg') }}">{{ $prel->bedrooms }}
                                     </li>@endif
                                     @if(!empty($prel->bathrooms))<li><img
                                             src="{{ url('images/frontend/images/bathroom.svg') }}">{{ $prel->bathrooms }}
@@ -257,11 +314,11 @@
                             </div>
                         </a>
                     </div>
+                </div>
+                @endforeach
             </div>
-            @endforeach
         </div>
-</div>
-</section>
+    </section>
 
 </div>
 
@@ -285,17 +342,19 @@
                             <label for="Full Name">Full Name</label>
                             <input type="text" class="form-control" name="full_name" id="full_name"
                                 placeholder="Full Name">
-                                <span id="error_name"></span>
+                            <span id="error_name"></span>
                         </div>
                         <div class="form-group col-md-6">
                             <label for="Phone Number">Contact Number</label>
-                            <input type="tel" class="form-control" name="phone" id="enq_phoneno" placeholder="Phone no.">
+                            <input type="tel" class="form-control" name="phone" id="enq_phoneno"
+                                placeholder="Phone no.">
                             <span id="error_phone"></span>
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="Email Address">Email</label>
-                        <input type="email" class="form-control" name="email" id="enq_email" placeholder="Email Address">
+                        <input type="email" class="form-control" name="email" id="enq_email"
+                            placeholder="Email Address">
                         <span id="error_email"></span>
                     </div>
                     <div class="form-group">

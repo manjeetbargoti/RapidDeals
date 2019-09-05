@@ -36,16 +36,13 @@ class HomeController extends Controller
     // Homepage Controller
     public function index()
     {
-        $properties_r = Property::where('offering_type', 'rent')->orderBy('p_created_at', 'desc')->take(8)->get();
+        $properties_r = Property::where('offering_type', 'rent')->orderBy('created_at', 'desc')->take(8)->get();
         $properties_r = json_decode(json_encode($properties_r));
-        $properties_s = Property::where('offering_type', 'sale')->orderBy('p_created_at', 'desc')->take(8)->get();
+        $properties_s = Property::where('offering_type', 'sale')->orderBy('created_at', 'desc')->take(8)->get();
         $properties_s = json_decode(json_encode($properties_s));
         $properties = array_merge($properties_s, $properties_r);
         $properties = json_decode(json_encode($properties));
         // echo"<pre>";print_r($properties); die;
-        // $locations = Location::where('l_id', 'are.3.3781')->first();
-        // $location = $locations['city'];
-        // echo"<pre>";print_r($location); die;
 
         return view('homepage', compact('properties'));
     }
@@ -118,8 +115,6 @@ class HomeController extends Controller
 
 
     // Property by Buy/Rent/Off Plan function
-    /// Property by Buy/Rent function
-   
     public function propertyFor(Request $request, $url=null)
     {
         // echo "<pre>";print_r($url);die;
@@ -143,7 +138,7 @@ class HomeController extends Controller
     public function cityProperty(Request $request, $community=null)
     {
         $type_name = Property::select('t_name')->where('community', $community)->distinct()->get();
-        $properties = Property::where('community', $community)->orderBy('p_created_at', 'desc')->paginate(10);
+        $properties = Property::where('community', $community)->orderBy('created_at', 'desc')->paginate(10);
         $property_count = Property::where('community', $community)->count();
 
         return view('frontend.property.property_category', compact('properties', 'type_name', 'property_count'));
@@ -172,175 +167,175 @@ class HomeController extends Controller
 
 
     // Home Page Search-Result Function Start
-   public function searchresult(Request $request)
-    {
-        $data = $request->all();
-        if( $data['property_type'] == 1 || $data['property_type'] == 2)
-        {
-        $scityID = $data['location_id'];
-        $type= $data['property_type'];
-        if($type == 1){
-            $url= "sale"; 
-        }elseif($type == 2){
-            $url= "rent"; 
-        }
-        $client = new Client();
-        if(!empty($scityID)){
-            $prop = $client->request('GET', 'https://api.mycrm.com/properties?filters[location_ids][]='.$scityID.'&filters[offering_type]='.$url.'&per_page=20', [
-                'headers' => [
-                    'Authorization' => 'Bearer 6ad4485a523c28cf90e5cbe9d185dfbd11fc422f',
-                ]
-            ]);
-        }else{
-            $prop = $client->request('GET', 'https://api.mycrm.com/properties?filters[offering_type]='.$url.'&per_page=20', [
-                'headers' => [
-                    'Authorization' => 'Bearer 6ad4485a523c28cf90e5cbe9d185dfbd11fc422f',
-                ]
-            ]);
-        }
+    // public function searchresult(Request $request)
+    // {
+    //     $data = $request->all();
+    //     if( $data['property_type'] == 1 || $data['property_type'] == 2)
+    //     {
+    //     $scityID = $data['location_id'];
+    //     $type= $data['property_type'];
+    //     if($type == 1){
+    //         $url= "sale"; 
+    //     }elseif($type == 2){
+    //         $url= "rent"; 
+    //     }
+    //     $client = new Client();
+    //     if(!empty($scityID)){
+    //         $prop = $client->request('GET', 'https://api.mycrm.com/properties?filters[location_ids][]='.$scityID.'&filters[offering_type]='.$url.'&per_page=20', [
+    //             'headers' => [
+    //                 'Authorization' => 'Bearer 6ad4485a523c28cf90e5cbe9d185dfbd11fc422f',
+    //             ]
+    //         ]);
+    //     }else{
+    //         $prop = $client->request('GET', 'https://api.mycrm.com/properties?filters[offering_type]='.$url.'&per_page=20', [
+    //             'headers' => [
+    //                 'Authorization' => 'Bearer 6ad4485a523c28cf90e5cbe9d185dfbd11fc422f',
+    //             ]
+    //         ]);
+    //     }
 
-        $data = $prop->getBody();
-        $data = json_decode($data, true);
-        $property_data = $data['properties'];
-        $counterApi= $data['count'];
-        $property_data = json_decode(json_encode($property_data));
-        foreach($property_data as $key => $prop_data)
-        {
-            if($prop_data->price->offering_type == 'sale'){
-                $property_data[$key]->property_for = 1;
-            }elseif($prop_data->price->offering_type == 'rent'){
-                $property_data[$key]->property_for = 2;
-            }
-            $property_data[$key]->name = $prop_data->languages[0]->title;
-            $property_data[$key]->property_type = $prop_data->type->name;
-            if(!empty($prop_data->price->prices[0]->value)){
-                $property_data[$key]->property_price = $prop_data->price->prices[0]->value;
-            }elseif(!empty($prop_data->price->value)){
-                $property_data[$key]->property_price = $prop_data->price->value;
-            }
-            $property_data[$key]->city_name = $prop_data->location->community;
-            $property_data[$key]->state_name = $prop_data->location->city;
-        }
-        $properties = $property_data;
-        $counter = $counterApi;
-        $numOfpages = intval($counter/20)+1;
-        $current_page = 1;
-            if($current_page == 1){
-                $has_next_page = true;
-                $has_previous_page = false;
-                $next_page = $current_page + 1;
-            }elseif($current_page < $numOfpages){
-                $has_next_page = true;
-                $has_previous_page = true;
-                $next_page = $current_page + 1;
-            }elseif($numOfpages <= $current_page ){
-                $has_next_page = false;
-                $has_previous_page = true;
-                $next_page = $current_page;
-            }
+    //     $data = $prop->getBody();
+    //     $data = json_decode($data, true);
+    //     $property_data = $data['properties'];
+    //     $counterApi= $data['count'];
+    //     $property_data = json_decode(json_encode($property_data));
+    //     foreach($property_data as $key => $prop_data)
+    //     {
+    //         if($prop_data->price->offering_type == 'sale'){
+    //             $property_data[$key]->property_for = 1;
+    //         }elseif($prop_data->price->offering_type == 'rent'){
+    //             $property_data[$key]->property_for = 2;
+    //         }
+    //         $property_data[$key]->name = $prop_data->languages[0]->title;
+    //         $property_data[$key]->property_type = $prop_data->type->name;
+    //         if(!empty($prop_data->price->prices[0]->value)){
+    //             $property_data[$key]->property_price = $prop_data->price->prices[0]->value;
+    //         }elseif(!empty($prop_data->price->value)){
+    //             $property_data[$key]->property_price = $prop_data->price->value;
+    //         }
+    //         $property_data[$key]->city_name = $prop_data->location->community;
+    //         $property_data[$key]->state_name = $prop_data->location->city;
+    //     }
+    //     $properties = $property_data;
+    //     $counter = $counterApi;
+    //     $numOfpages = intval($counter/20)+1;
+    //     $current_page = 1;
+    //         if($current_page == 1){
+    //             $has_next_page = true;
+    //             $has_previous_page = false;
+    //             $next_page = $current_page + 1;
+    //         }elseif($current_page < $numOfpages){
+    //             $has_next_page = true;
+    //             $has_previous_page = true;
+    //             $next_page = $current_page + 1;
+    //         }elseif($numOfpages <= $current_page ){
+    //             $has_next_page = false;
+    //             $has_previous_page = true;
+    //             $next_page = $current_page;
+    //         }
             
-        $data1 = $prop->getBody();
-        $data1 = json_decode($data1, true);
-        $property_data1 = $data1['properties'];
-        $property_data1 = json_decode(json_encode($property_data1));
-        foreach($property_data1 as $key => $prop_data1)
-        {
-            if($prop_data1->price->offering_type == 'sale'){
-                $property_data1[$key]->property_for = 1;
-            }elseif($prop_data1->price->offering_type == 'rent'){
-                $property_data1[$key]->property_for = 2;
-            }   
-            $property_data1[$key]->property_type = $prop_data1->type->name;
+    //     $data1 = $prop->getBody();
+    //     $data1 = json_decode($data1, true);
+    //     $property_data1 = $data1['properties'];
+    //     $property_data1 = json_decode(json_encode($property_data1));
+    //     foreach($property_data1 as $key => $prop_data1)
+    //     {
+    //         if($prop_data1->price->offering_type == 'sale'){
+    //             $property_data1[$key]->property_for = 1;
+    //         }elseif($prop_data1->price->offering_type == 'rent'){
+    //             $property_data1[$key]->property_for = 2;
+    //         }   
+    //         $property_data1[$key]->property_type = $prop_data1->type->name;
             
-        }
-        $properties1 = $property_data1;
-        $propdata2 = json_decode(json_encode($property_data1), true);
-        $properties1 = json_decode(json_encode($properties1));
+    //     }
+    //     $properties1 = $property_data1;
+    //     $propdata2 = json_decode(json_encode($property_data1), true);
+    //     $properties1 = json_decode(json_encode($properties1));
 
-        $client1 = new Client();
-        $i = 1;
-        $location_data = array();
-        do{
-            $location = $client1->request('GET', 'https://api.mycrm.com/locations?filters[]&page='.$i.'', [
-                'headers' => [
-                    'Authorization' => 'Bearer 6ad4485a523c28cf90e5cbe9d185dfbd11fc422f',
-                    ]
-                ]);
-            $data1          = $location->getBody();
-            $data1          = json_decode($data1, true);
-            $loc            = $data1['location'];
-            $location_data  = array_merge($location_data,$loc);
-            $mod            = $data1['count'] % 100;
-            if($mod != 0){
-                $rem = 1;
-            }else{
-                $rem = 0;
-            }
-            $count          = (int)($data1['count'] / 100) + $rem;
-            $i++;
-        }while($count >= $i);
+    //     $client1 = new Client();
+    //     $i = 1;
+    //     $location_data = array();
+    //     do{
+    //         $location = $client1->request('GET', 'https://api.mycrm.com/locations?filters[]&page='.$i.'', [
+    //             'headers' => [
+    //                 'Authorization' => 'Bearer 6ad4485a523c28cf90e5cbe9d185dfbd11fc422f',
+    //                 ]
+    //             ]);
+    //         $data1          = $location->getBody();
+    //         $data1          = json_decode($data1, true);
+    //         $loc            = $data1['location'];
+    //         $location_data  = array_merge($location_data,$loc);
+    //         $mod            = $data1['count'] % 100;
+    //         if($mod != 0){
+    //             $rem = 1;
+    //         }else{
+    //             $rem = 0;
+    //         }
+    //         $count          = (int)($data1['count'] / 100) + $rem;
+    //         $i++;
+    //     }while($count >= $i);
         
-        $location_data = json_decode(json_encode($location_data));
+    //     $location_data = json_decode(json_encode($location_data));
         
-        return view('frontend.property.property_category', compact('counter','location_data','properties1','url','type','properties','numOfpages','current_page','has_next_page','has_previous_page','next_page'));
-        }
-        else{
-            $scityID = $data['search_text'];
-            $spropID = $data['property_type'];
+    //     return view('frontend.property.property_category', compact('counter','location_data','properties1','url','type','properties','numOfpages','current_page','has_next_page','has_previous_page','next_page'));
+    //     }
+    //     else{
+    //         $scityID = $data['search_text'];
+    //         $spropID = $data['property_type'];
             
-            if(empty($scityID)){
-                $properties = Property::where(['property_for'=>$spropID])->paginate(20);
-            }else{
-                $properties = Property::where([[ 'city','=', $scityID], ['property_for', '=', $spropID]])->paginate(20);
-            }
-            $counterDb  = count($properties);
-            foreach($properties as $key => $val)
-            {
-                $prop_type = PropertyType::where(['type_code' => $val->property_type])->first();
-                $properties[$key]->property_type = $prop_type->name;
+    //         if(empty($scityID)){
+    //             $properties = Property::where(['property_for'=>$spropID])->paginate(20);
+    //         }else{
+    //             $properties = Property::where([[ 'city','=', $scityID], ['property_for', '=', $spropID]])->paginate(20);
+    //         }
+    //         $counterDb  = count($properties);
+    //         foreach($properties as $key => $val)
+    //         {
+    //             $prop_type = PropertyType::where(['type_code' => $val->property_type])->first();
+    //             $properties[$key]->property_type = $prop_type->name;
     
-                $city_name = City::where(['id' => $val->city])->first();
-                $properties[$key]->city_name = $city_name->name;
+    //             $city_name = City::where(['id' => $val->city])->first();
+    //             $properties[$key]->city_name = $city_name->name;
     
-                $state_name = State::where(['id' => $val->state])->first();
-                $properties[$key]->state_name = $state_name->name;
+    //             $state_name = State::where(['id' => $val->state])->first();
+    //             $properties[$key]->state_name = $state_name->name;
     
-                $prop_img_count = PropertyImage::where(['property_id' => $val->id])->count();
-                if($prop_img_count > 0)
-                {
-                    $prop_img = PropertyImage::where(['property_id' => $val->id])->first();
-                    $properties[$key]->image_name = $prop_img->image_name;
-                }
-            }
+    //             $prop_img_count = PropertyImage::where(['property_id' => $val->id])->count();
+    //             if($prop_img_count > 0)
+    //             {
+    //                 $prop_img = PropertyImage::where(['property_id' => $val->id])->first();
+    //                 $properties[$key]->image_name = $prop_img->image_name;
+    //             }
+    //         }
             
-        $client1 = new Client();
-        $i = 1;
-        $location_data = array();
-        do{
-            $location = $client1->request('GET', 'https://api.mycrm.com/locations?filters[]&page='.$i.'', [
-                'headers' => [
-                    'Authorization' => 'Bearer 6ad4485a523c28cf90e5cbe9d185dfbd11fc422f',
-                    ]
-                ]);
-            $data1          = $location->getBody();
-            $data1          = json_decode($data1, true);
-            $loc            = $data1['location'];
-            $location_data  = array_merge($location_data,$loc);
-            $mod            = $data1['count'] % 100;
-            if($mod != 0){
-                $rem = 1;
-            }else{
-                $rem = 0;
-            }
-            $count          = (int)($data1['count'] / 100) + $rem;
-            $i++;
-        }while($count >= $i);
+    //     $client1 = new Client();
+    //     $i = 1;
+    //     $location_data = array();
+    //     do{
+    //         $location = $client1->request('GET', 'https://api.mycrm.com/locations?filters[]&page='.$i.'', [
+    //             'headers' => [
+    //                 'Authorization' => 'Bearer 6ad4485a523c28cf90e5cbe9d185dfbd11fc422f',
+    //                 ]
+    //             ]);
+    //         $data1          = $location->getBody();
+    //         $data1          = json_decode($data1, true);
+    //         $loc            = $data1['location'];
+    //         $location_data  = array_merge($location_data,$loc);
+    //         $mod            = $data1['count'] % 100;
+    //         if($mod != 0){
+    //             $rem = 1;
+    //         }else{
+    //             $rem = 0;
+    //         }
+    //         $count          = (int)($data1['count'] / 100) + $rem;
+    //         $i++;
+    //     }while($count >= $i);
         
-        $location_data = json_decode(json_encode($location_data));
+    //     $location_data = json_decode(json_encode($location_data));
         
-        return view('frontend.property.property_category_offplan', compact('location_data','properties'));
-        }
-    }
+    //     return view('frontend.property.property_category_offplan', compact('location_data','properties'));
+    //     }
+    // }
     
     // contact-form 
      public function contactQuery(Request $request)
@@ -606,7 +601,7 @@ class HomeController extends Controller
     //             $prop_api->images_mlink         = $images_mlink;
     //             $prop_api->images_flink         = $images_flink;
     //             $prop_api->amenities_name       = $amenities;
-    //             $prop_api->p_created_at         = $created_at;
+    //             $prop_api->created_at         = $created_at;
     //             $prop_api->p_updated_at         = $updated_at;
     //             $prop_api->created_by           = $created_by; 
 
@@ -615,8 +610,4 @@ class HomeController extends Controller
     //     return $hit;
     // }
 
-    // Add City to Properties
-    public function addPropCity(){
-        
-    }
 }

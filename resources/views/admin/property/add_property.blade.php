@@ -123,8 +123,8 @@ function generate_string($input, $strength = 16) {
                                         </div>
                                         <div class="col-xs-12 col-md-6">
                                             <div class="form-group">
-                                                <label for="Property For">Project Status</label>
-                                                <select name="property_for" id="property_for"
+                                                <label for="Project Status">Project Status</label>
+                                                <select name="project_status" id="project_status"
                                                     class="form-control select2" style="width: 100%;" tabindex="-1"
                                                     aria-hidden="true">
                                                     <option value="" selected>Select Project Status</option>
@@ -324,22 +324,10 @@ function generate_string($input, $strength = 16) {
                                             </div>
                                         </div>
 
-                                        <div class="col-xs-6 col-sm-6 col-md-6">
+                                        <div class="col-xs-12 col-sm-6 col-md-4">
                                             <div class="form-group">
                                                 <label for="RERA Listing Number">RERA Listing Number</label>
                                                 <input type="text" name="rera_number" id="rera_number" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-xs-6 col-sm-6 col-md-4">
-                                            <div class="form-group">
-                                                <label for="Property Age">Property Age</label>
-                                                <select name="property_age" id="property_age" class="form-control">
-                                                    <option value="" selected>Select</option>
-                                                    <?php for($i=1; $i<100; $i++) { ?>
-                                                    <option value="<?php echo $i; ?>"><?php echo $i; ?></option>
-                                                    <?php } ?>
-                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -372,34 +360,15 @@ function generate_string($input, $strength = 16) {
 
                                         <div class="col-xs-6 col-sm-6 col-md-6">
                                             <div class="form-group">
-                                                <label for="Locality">Locality</label>
-                                                <input type="text" name="locality" id="locality" class="form-control">
-                                            </div>
-                                        </div>
-
-                                        <div class="col-xs-6 col-sm-6 col-md-6">
-                                            <div class="form-group">
-                                                <label for="Country">Country</label>
-                                                <select name="country" id="country" class="form-control"
-                                                    style="width: 100%;" tabindex="-1" aria-hidden="true">
-                                                    @foreach($countrylist as $c)
-                                                    <option value="{{ $c->iso2 }}">{{ $c->name }}</option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-xs-6 col-sm-6 col-md-6">
-                                            <div class="form-group">
                                                 <label for="State">Property Location</label>
-                                                <!-- <select class="form-control select2 select2-hidden-accessible"
-                                                    name="state" id="state" style="width: 100%;" tabindex="-1"
+                                                <select class="form-control select2 select2-hidden-accessible"
+                                                    name="location_id" id="search_text" style="width: 100%;" tabindex="-1"
                                                     aria-hidden="true" data-placeholder="Tower, Community...">
                                                     <option value="" selected>Select Location</option>
-                                                    <div id="searchlist"></div>
-                                                </select> -->
-                                                <input type="text" name="search_text" id="search_name" class="form-control search_location" placeholder="Tower, Community...">
-                                                <div id="searchlist"></div>
+                                                    @foreach($location as $locate)
+                                                    <option value="{{ $locate->l_id }}">@if(!empty($locate->tower)){{ $locate->tower }}, {{ $locate->sub_community }}, {{ $locate->community }}, {{ $locate->city }}@elseif(!empty($locate->sub_community)) {{ $locate->sub_community }}, {{ $locate->community }}, {{ $locate->city }} @elseif(!empty($locate->community)) {{ $locate->community }}, {{ $locate->city }} @endif</option>
+                                                    @endforeach
+                                                </select>
                                             </div>
                                         </div>
                                     </div>
@@ -444,7 +413,7 @@ function generate_string($input, $strength = 16) {
                                                 <label>
                                                     <input type="checkbox" name="amenity[]"
                                                         id="<?php echo preg_replace('/[^a-zA-Z0-9-]/','' ,strtolower($a->name)); ?>"
-                                                        class="flat-green" value="{{ $a->amenity_code }}"> {{ $a->name }}
+                                                        class="flat-green" value="{{ $a->name }}"> {{ $a->name }}
                                                 </label>
                                             </div>
                                         </div>

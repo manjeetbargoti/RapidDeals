@@ -43,24 +43,34 @@
                                     <td>{{ $i }}</td>
                                     <td>
                                         @if(!empty($p->images_mlink))
-                                            @foreach(explode(',',$p->images_mlink) as $key => $image_m)
-                                                @if($key == 0)
-                                                <img width="80" class="img-responsive" src="{{ $image_m }}">
-                                                @endif
-                                            @endforeach
+                                        @foreach(explode(',',$p->images_mlink) as $key => $image_m)
+                                        @if($key == 0)
+                                        <img width="80" class="img-responsive" src="{{ $image_m }}">
+                                        @endif
+                                        @endforeach
+                                        @elseif(\App\PropertyImage::where('property_id', $p->id)->count() > 0)
+                                        @foreach(\App\PropertyImage::where('property_id', $p->id)->take(1)->get() as $pim)
+                                        <img width="80" class="img-responsive" src="{{ url('images/frontend/property_images/large/'.$pim->image_name) }}">
+                                        @endforeach
                                         @else
-                                        <img src="{{ url('images/frontend/property_images/large/default.png') }}">
+                                        <img width="80" src="{{ url('images/frontend/property_images/large/default.png') }}">
                                         @endif
                                     </td>
                                     <td><a href="{{ url('/properties/'.$p->reference) }}">{{ $p->pro_title}}</a></td>
-                                    <td><label class="label label-md label-success">@if($p->offering_type == 'sale') Sale @elseif($p->offering_type == 'rent') Rent @endif</label></td>
-                                    <td>@if($p->offering_type == 'sale') AED {{ $p->price_value }} @elseif($p->offering_type == 'rent') AED {{ $p->price_value }} /year @endif</td>
-                                    <td><label class="label label-md- label-info">@if($p->project_status == 'off_plan') Off Plan @endif</label></td>
+                                    <td><label class="label label-md label-success">@if($p->offering_type == 'sale')
+                                            Sale @elseif($p->offering_type == 'rent') Rent @endif</label></td>
+                                    <td>@if($p->offering_type == 'sale') AED {{ $p->price_value }}
+                                        @elseif($p->offering_type == 'rent') AED {{ $p->price_value }} /year @endif</td>
+                                    <td><label class="label label-md- label-info">@if($p->project_status == 'off_plan')
+                                            Off Plan @endif</label></td>
                                     <td>{{ $p->community }}, {{ $p->city }}</td>
                                     <td>
                                         <div id="donate">
-                                            <a href="{{ url('/admin/property/'.$p->reference.'/edit') }}" title="Edit" class="label label-success label-sm"><i class="fa fa-edit"></i></a>
-                                            <a href="{{ url('/admin/property/'.$p->reference.'/delete') }}" title="Delete" class="label label-danger label-sm"><i class="fa fa-trash"></i></a>
+                                            <a href="{{ url('/admin/property/'.$p->reference.'/edit') }}" title="Edit"
+                                                class="label label-success label-sm"><i class="fa fa-edit"></i></a>
+                                            <a href="{{ url('/admin/property/'.$p->reference.'/delete') }}"
+                                                title="Delete" class="label label-danger label-sm"><i
+                                                    class="fa fa-trash"></i></a>
                                         </div>
                                     </td>
                                 </tr>

@@ -148,8 +148,12 @@
                                             <img style="max-height:225px;" class="img-responsive" src="{{ $image_m }}">
                                             @endif
                                         @endforeach
+                                    @elseif(\App\PropertyImage::where('property_id', $p->id)->count() > 0)
+                                        @foreach(\App\PropertyImage::where('property_id', $p->id)->get() as $pim)
+                                            <img class="img-responsive" src="{{ url('images/frontend/property_images/large/'.$pim->image_name) }}">
+                                        @endforeach
                                     @else
-                                    <img src="{{ url('images/frontend/property_images/large/default.png') }}">
+                                        <img src="{{ url('images/frontend/property_images/large/default.png') }}">
                                     @endif
                                 </div>
                                 <div class="proplist_item">

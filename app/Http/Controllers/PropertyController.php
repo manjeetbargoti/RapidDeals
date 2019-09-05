@@ -85,12 +85,12 @@ class PropertyController extends Controller
         if ($request->get('query')) {
             $query = $request->get('query');
             $data = Location::where('tower', 'LIKE', "%{$query}%")->orWhere('community', 'LIKE', "%{$query}%")->orWhere('sub_community', 'LIKE', "%{$query}%")->orderBy('created_at', 'desc')->distinct()->get();
-            $output = '<ul class="get_location">';
+            $output = '<select class="get_location">';
             foreach ($data as $row) {
                 $flag = '<span class="flag_name">' . $row->l_id . '</span>';
                 $output .= '<option value='.$row->l_id.' id="type_search">' .$row->tower.', '. $row->sub_community.', '.$row->community.', '.$row->city . '</option>';
             }
-            $output .= '</ul>';
+            $output .= '</select>';
             echo $output;
             // echo $flag;
         }
@@ -101,7 +101,11 @@ class PropertyController extends Controller
     {
         if ($request->isMethod('POST')) {
             $data = $request->all();
-            echo"<pre>";print_r($data);die;
+
+            $location_data = Location::where('l_id', $data['location_id'])->first();
+
+            // echo"<pre>";print_r($l_city);die;
+
             if (!empty($data['feature'])) {
                 $featured = 1;
             } else {
@@ -122,22 +126,21 @@ class PropertyController extends Controller
             }
 
             $reference_code = 'rpdeals-'.rand(1000001, 999999999);
+            // echo"<pre>";print_r($reference_code);die;
 
             $property = Property::create([
                 'pro_title'             => $data['property_name'],
-                // 'url'                   => $data['slug'],
+                'reference'              => $reference_code,
                 'offering_type'         => $data['property_for'],
                 't_name'                => $data['property_type'],
-                'property_code'         => $data['property_code'],
+                'project_status'        => $data['project_status'],
                 'price_value'           => $data['property_price'],
                 'pro_description'       => $data['description'],
-                // 'featured'              => $featured,
                 'size'                  => $data['property_area'],
                 't_category'            => $data['property_category'],
-                'furnish_type'          => $data['furnish_type'],
+                'furnished'          => $data['furnish_type'],
                 'occupancy'             => $data['occupancy'],
                 'status'                => $data['availability'],
-                // 'rooms'                 => $data['rooms'],
                 'bedrooms'              => $data['bedrooms'],
                 'bathrooms'             => $data['bathrooms'],
                 'parking'               => $data['parking'],
@@ -147,12 +150,12 @@ class PropertyController extends Controller
                 'street_number'         => $data['street_number'],
                 'street_name'           => $data['street_name'],
                 'licenses_number'       => $data['rera_number'],
-
-                // 'property_age'          => $data['property_age'],
-                'amenities'             => $amenity,
+                'amenities_name'        => $amenity,
                 'unit_number'           => $data['unit_no'],
-                'city'                  => $data['city'],
-                'community'             => $data['community'],
+                'city'                  => $location_data['city'],
+                'community'             => $location_data['community'],
+                'sub_community'         => $location_data['sub_community'],
+                'tower'                 => $location_data['tower'],
                 'l_id'                  => $data['location_id'],
                 'add_by'                => Auth::user()->id
             ]);
@@ -231,7 +234,8 @@ class PropertyController extends Controller
         $states = State::where('country', 'AE')->get();
         $propertytype = PropertyType::where('status', 1)->orderBy('name', 'asc')->get();
         $amenities = Amenity::where('status', 1)->orderBy('name', 'asc')->get();
-        return view('admin.property.add_property', compact('propertytype', 'countrylist', 'states', 'amenities'));
+        $location = Location::orderBy('created_at', 'desc')->distinct()->get();
+        return view('admin.property.add_property', compact('propertytype', 'countrylist', 'states', 'amenities', 'location'));
     }
 
     // Edit Property and Update Property Information
@@ -241,19 +245,10 @@ class PropertyController extends Controller
         if($request->isMethod('post'))
         {
             $data = $request->all();
-            // echo "<pre>"; print_r($data); die;
 
-            if (!empty($data['feature'])) {
-                $featured = 1;
-            } else {
-                $featured = 0;
-            }
+            $location = Location::where('l_id', $data['location_id'])->first();
 
-            if (!empty($data['commercial'])) {
-                $commercial = 1;
-            } else {
-                $commercial = 0;
-            }
+            // echo "<pre>"; print_r($location); die;
 
             $amenities = $data['amenity'];
             $amenity = implode(',', $amenities);
@@ -337,41 +332,26 @@ class PropertyController extends Controller
             }
             
             Property::where('id', $id)->update([
-                'property_for'=>$data['property_for'],'name'=>$data['property_name'],'url'=>$data['slug'],'property_type'=>$data['property_type'],
-                'property_code'=>$data['property_code'],'property_price'=>$data['property_price'],'description'=>$data['description'],'featured'=>$featured,
-                'property_area'=>$data['property_area'],'property_facing'=>$data['property_facing'],'transection_type'=>$data['transection_type'],
-                'construction_status'=>$data['construction_status'],'rooms'=>$data['rooms'],'bedrooms'=>$data['bedrooms'],'bathrooms'=>$data['bathrooms'],
-                'parking'=>$data['parking'],'furnish_type'=>$data['furnish_type'],'p_washrooms'=>$data['p_washroom'],'cafeteria'=>$data['cafeteria'],
-                'property_age'=>$data['property_age'],'commercial'=>$commercial,'amenities'=>$amenity,'unitno'=>$data['unit_no'],'addressline1'=>$data['property_address1'],
-                'addressline2'=>$data['property_address2'],'locality'=>$data['locality'],'country'=>$data['country'],'state'=>$data['state'],'city'=>$data['city'],'postalcode'=>$data['zipcode'],
+                'offering_type'=>$data['property_for'],'pro_title'=>$data['property_name'],'t_name'=>$data['property_type'], 'project_status'=>$data['project_status'],
+                'price_value'=>$data['property_price'],'pro_description'=>$data['description'], 'developer'=>$data['property_developer'],'parking'=>$data['parking'],'size'=>$data['property_area'],
+                't_category'=>$data['property_category'],'furnished'=>$data['furnish_type'],'bedrooms'=>$data['bedrooms'],'bathrooms'=>$data['bathrooms'],'licenses_number' => $data['rera_number'],
+                'occupancy'=>$data['occupancy'],'status'=>$data['availability'], 'freehold'=>$data['property_tenure'],'floor_number'=>$data['floor_number'],'amenities_name'=>$amenity,'unit_number'=>$data['unit_no'],'street_number'=>$data['street_number'],
+                'street_name'=>$data['street_name'],'city'=>$location['city'],'community'=>$location['community'],'sub_community'=>$location['sub_community'],'tower'=>$location['tower'],
             ]);
 
             return redirect('/admin/properties')->with('flash_message_success', 'Property Updated Successfully!');
         }
 
-        $property = Property::where('id', $id)->first();
+        $property = Property::where('reference', $id)->first();
         $property = json_decode(json_encode($property));
 
         // echo "<pre>"; print_r($property); die;
 
-        // City Dropdown
-        $cityname = City::where(['state_id' => $property->state])->get();
-        $city_dropdown = "<option selected value=''>Select City</option>";
-        foreach ($cityname as $city) {
-            if ($city->id == $property->city) {
-                $selected = "selected";
-            } else {
-                $selected = "";
-            }
-            $city_dropdown .= "<option value='" . $city->id . "' " . $selected . ">" . $city->name . "</option>";
-        }
-
-        $countrylist = Country::where('iso2', 'AE')->get();
-        $states = State::where('country', 'AE')->get();
         $propertytype = PropertyType::where('status', 1)->orderBy('name', 'asc')->get();
         $amenities = Amenity::where('status', 1)->orderBy('name', 'asc')->get();
+        $location = Location::orderBy('created_at', 'desc')->distinct()->get();
 
-        return view('admin.property.edit_property', compact('property', 'countrylist', 'states', 'propertytype', 'amenities', 'city_dropdown'));
+        return view('admin.property.edit_property', compact('property', 'propertytype', 'amenities', 'location'));
     }
 
     // Delete Property image on edit page
@@ -471,18 +451,8 @@ class PropertyController extends Controller
     // View All Property in Dashboard
     public function allProperty()
     {
-        $properties = Property::orderBy('p_created_at', 'desc')->paginate(10);
-        
-        // $properties = json_decode(json_encode($properties));
-
-        // foreach($properties as $key => $val)
-        // {
-        //     $prop_image_count = PropertyImage::where(['property_id' => $val->id])->count();
-        //     if($prop_image_count > 0){
-        //     $prop_image = PropertyImage::where(['property_id' => $val->id])->first();
-        //     $properties[$key]->image_name = $prop_image->image_name;
-        //     }
-        // }
+        $properties = Property::orderBy('created_at', 'desc')->paginate(10);
+    
         return view('admin.property.view_property', compact('properties'));
     }
 
@@ -582,59 +552,59 @@ class PropertyController extends Controller
     }
 
     // Consume API Data
-    public function apiData(Request $request)
-    {
-        $client = new Client();
-        $prop = $client->request('GET', 'https://api.mycrm.com/properties?filters[offering_type]=sale&per_page=20', [
-            'headers' => [
-                'Authorization' => 'Bearer 6ad4485a523c28cf90e5cbe9d185dfbd11fc422f',
-            ]
-        ]);
+    // public function apiData(Request $request)
+    // {
+    //     $client = new Client();
+    //     $prop = $client->request('GET', 'https://api.mycrm.com/properties?filters[offering_type]=sale&per_page=20', [
+    //         'headers' => [
+    //             'Authorization' => 'Bearer 6ad4485a523c28cf90e5cbe9d185dfbd11fc422f',
+    //         ]
+    //     ]);
 
-        $data = $prop->paginate(20);
+    //     $data = $prop->paginate(20);
 
-        $data = $data->getBody();
-        // $data = $data->paginate(10);
-        $data = json_decode($data, true);
-        $property_data = $data['properties'];
-        $property_data = json_decode(json_encode($property_data));
+    //     $data = $data->getBody();
+    //     // $data = $data->paginate(10);
+    //     $data = json_decode($data, true);
+    //     $property_data = $data['properties'];
+    //     $property_data = json_decode(json_encode($property_data));
         
-        // echo "<pre>"; print_r($property_data); die;
+    //     // echo "<pre>"; print_r($property_data); die;
 
-        return view('frontend.api', compact('property_data'));
-    }
+    //     return view('frontend.api', compact('property_data'));
+    // }
 
     // View Single Api Property
-    public function apiProperty($id=null)
-    {
-        $client = new Client();
-        $prop = $client->request('GET', 'https://api.mycrm.com/properties/'.$id, [
-            'headers' => [
-                'Authorization' => 'Bearer 6ad4485a523c28cf90e5cbe9d185dfbd11fc422f',
-            ]
-        ]);
+    // public function apiProperty($id=null)
+    // {
+    //     $client = new Client();
+    //     $prop = $client->request('GET', 'https://api.mycrm.com/properties/'.$id, [
+    //         'headers' => [
+    //             'Authorization' => 'Bearer 6ad4485a523c28cf90e5cbe9d185dfbd11fc422f',
+    //         ]
+    //     ]);
 
-        $prop_all = $client->request('GET', 'https://api.mycrm.com/properties', [
-            'headers' => [
-                'Authorization' => 'Bearer 6ad4485a523c28cf90e5cbe9d185dfbd11fc422f',
-            ]
-        ]);
+    //     $prop_all = $client->request('GET', 'https://api.mycrm.com/properties', [
+    //         'headers' => [
+    //             'Authorization' => 'Bearer 6ad4485a523c28cf90e5cbe9d185dfbd11fc422f',
+    //         ]
+    //     ]);
 
-        // Single Property
-        $data = $prop->getBody();
-        $data = json_decode($data, true);
-        $property_data = $data['property'];
-        $property_data = json_decode(json_encode($property_data));
+    //     // Single Property
+    //     $data = $prop->getBody();
+    //     $data = json_decode($data, true);
+    //     $property_data = $data['property'];
+    //     $property_data = json_decode(json_encode($property_data));
 
-        // All Property
-        $data = $prop_all->getBody();
-        $data = json_decode($data, true);
-        $property_all = $data['properties'];
-        $property_all = json_decode(json_encode($property_all));
+    //     // All Property
+    //     $data = $prop_all->getBody();
+    //     $data = json_decode($data, true);
+    //     $property_all = $data['properties'];
+    //     $property_all = json_decode(json_encode($property_all));
         
-        // echo "<pre>"; print_r($property_data); die;
+    //     // echo "<pre>"; print_r($property_data); die;
 
-        return view('frontend.property.api_single_property', compact('property_data', 'property_all'));
-    }
+    //     return view('frontend.property.api_single_property', compact('property_data', 'property_all'));
+    // }
 
 }

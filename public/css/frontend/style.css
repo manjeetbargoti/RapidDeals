@@ -366,6 +366,7 @@ section {
 
 .pro_img {
     overflow: hidden;
+    height: 250px;
 }
 
 .pro_img img {
