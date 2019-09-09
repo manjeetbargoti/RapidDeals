@@ -209,10 +209,10 @@
                 <div class="col-md-6">
                     <div class="proplistbox nearby_item">
                         <ul>
-                            <li><a href="{{ url('/property/48003/al-quoz') }}">Buy Properties in Al Quoz</a></li>
-                            <li><a href="{{ url('/property/47987/dubai-city') }}">Buy Properties in Dubai City</a></li>
-                            <li><a href="{{ url('/property/48008/hatta') }}">Buy Properties in Hatta</a></li>
-                            <li><a href="{{ url('/property/48064/arjan') }}">Buy Properties in Arjan</a></li>
+                            <li><a href="{{ url('/property/in/International City') }}">Buy Properties in International City</a></li>
+                            <li><a href="{{ url('/property/in/Greens') }}">Buy Properties in Greens</a></li>
+                            <li><a href="{{ url('/property/in/Dubai Hills Estate') }}">Buy Properties in Dubai Hills Estate</a></li>
+                            <li><a href="{{ url('/property/in/Jumeirah Lake Towers') }}">Buy Properties in Jumeirah Lake Towers</a></li>
                         </ul>
                     </div>
                 </div>
